@@ -19,13 +19,13 @@ The CCLoader.exe and the .bin file **must be in the same folder.**
 * Still on the CMD, type **CCLoader.exe 9 CC2541hm10v540.bin 0** Number 9 is the COM port number and 0 means that we are using Arduino UNO board.
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/CCLoader_start.png)
 
-If there's no error, the programming should start and continue for about 1 minute or more.
+* If there's no error, the programming should start and continue for about 1 minute or more.
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/During_programming.png)
 
-wait until it finishes.
+* Wait until it finishes.
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/CCLoader_finish.png)
 
-Now your JDY-08 has become HM-10 (but still in the JDY-08's physical form, of course).
+* Now your JDY-08 has become HM-10 (but still in the JDY-08's physical form, of course).
 
 ## Post Programming
 After he programming, some of the physical pins are changed. The most important pins are:
