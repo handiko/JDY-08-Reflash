@@ -34,3 +34,4 @@ After he programming, some of the physical pins are changed. The most important 
 * P17 become UART RX.
 
 Some people said that it is necessary to pull down P13 to enter the AT mode. But for my experience, it's not. Try pull down the P13 if you encounter difficulty to enter AT mode.
+![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_pins_post_programming.png)
