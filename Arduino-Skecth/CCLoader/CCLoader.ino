@@ -311,14 +311,6 @@ void read_flash_memory_block(unsigned char bank,unsigned short flash_addr,
     }
 }
 
-/**************************************************************************//**
-* @brief    Writes 4-2048 bytes to DUP's flash memory. Parameter \c num_bytes
-*           must be a multiple of 4.
-* @param    src         Pointer to programmer's source buffer (in XDATA space)
-* @param    start_addr  FLASH memory start address [0x0000 - 0x7FFF]
-* @param    num_bytes   Number of bytes to transfer [4-1024]
-* @return   None.
-******************************************************************************/
 void write_flash_memory_block(unsigned char *src, unsigned long start_addr,
                               unsigned short num_bytes)
 {
