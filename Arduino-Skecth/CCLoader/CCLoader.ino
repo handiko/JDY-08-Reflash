@@ -383,10 +383,8 @@ void read_flash_memory_block(unsigned char bank,unsigned short flash_addr,
     unsigned short i;
     unsigned short xdata_addr = (0x8000 + flash_addr);
 
-    // 1. Map flash memory bank to XDATA address 0x8000-0xFFFF
     write_xdata_memory(DUP_MEMCTR, bank);
 
-    // 2. Move data pointer to XDATA address (MOV DPTR, xdata_addr)
     instr[0] = 0x90;
     instr[1] = HIBYTE(xdata_addr);
     instr[2] = LOBYTE(xdata_addr);
@@ -394,11 +392,9 @@ void read_flash_memory_block(unsigned char bank,unsigned short flash_addr,
 
     for (i = 0; i < num_bytes; i++)
     {
-        // 3. Move value pointed to by DPTR to accumulator (MOVX A, @DPTR)
         instr[0] = 0xE0;
         values[i] = debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
 
-        // 4. Increment data pointer (INC DPTR)
         instr[0] = 0xA3;
         debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
     }
@@ -415,34 +411,27 @@ void read_flash_memory_block(unsigned char bank,unsigned short flash_addr,
 void write_flash_memory_block(unsigned char *src, unsigned long start_addr,
                               unsigned short num_bytes)
 {
-    // 1. Write the 2 DMA descriptors to RAM
     write_xdata_memory_block(ADDR_DMA_DESC_0, dma_desc_0, 8);
     write_xdata_memory_block(ADDR_DMA_DESC_1, dma_desc_1, 8);
 
-    // 2. Update LEN value in DUP's DMA descriptors
     unsigned char len[2] = {HIBYTE(num_bytes), LOBYTE(num_bytes)};
     write_xdata_memory_block((ADDR_DMA_DESC_0+4), len, 2);  // LEN, DBG => ram
     write_xdata_memory_block((ADDR_DMA_DESC_1+4), len, 2);  // LEN, ram => flash
 
-    // 3. Set DMA controller pointer to the DMA descriptors
     write_xdata_memory(DUP_DMA0CFGH, HIBYTE(ADDR_DMA_DESC_0));
     write_xdata_memory(DUP_DMA0CFGL, LOBYTE(ADDR_DMA_DESC_0));
     write_xdata_memory(DUP_DMA1CFGH, HIBYTE(ADDR_DMA_DESC_1));
     write_xdata_memory(DUP_DMA1CFGL, LOBYTE(ADDR_DMA_DESC_1));
 
-    // 4. Set Flash controller start address (wants 16MSb of 18 bit address)
     write_xdata_memory(DUP_FADDRH, HIBYTE( (start_addr)));//>>2) ));
     write_xdata_memory(DUP_FADDRL, LOBYTE( (start_addr)));//>>2) ));
 
-    // 5. Arm DBG=>buffer DMA channel and start burst write
     write_xdata_memory(DUP_DMAARM, CH_DBG_TO_BUF0);
     burst_write_block(src, num_bytes);
 
-    // 6. Start programming: buffer to flash
     write_xdata_memory(DUP_DMAARM, CH_BUF0_TO_FLASH);
     write_xdata_memory(DUP_FCTL, 0x0A);//0x06
 
-    // 7. Wait until flash controller is done
     while (read_xdata_memory(DUP_FCTL) & 0x80);
 }
 
@@ -450,8 +439,6 @@ void RunDUP(void)
 {
   volatile unsigned char i;
 
-  // Send two flanks on DC while keeping RESET_N low
-  // All low (incl. RESET_N)
   digitalWrite(DD, LOW);
   digitalWrite(DC, LOW);
   digitalWrite(RESET, LOW);
@@ -477,8 +464,6 @@ void setup()
 {  
   ProgrammerInit();  
   Serial.begin(115200);
-  // If using Leonado as programmer, 
-  //it should add below code,otherwise,comment it.
   while(!Serial);
 }
 
@@ -521,17 +506,12 @@ void loop()
   RunDUP();
   debug_init();
   
-  // Switch DUP to external crystal osc. (XOSC) and wait for it to be stable.
-  // This is recommended if XOSC is available during programming. If
-  // XOSC is not available, comment out these two lines.
   write_xdata_memory(DUP_CLKCONCMD, 0x80);
   while (read_xdata_memory(DUP_CLKCONSTA) != 0x80);//0x80)
   
-  // Enable DMA (Disable DMA_PAUSE bit in debug configuration)
   debug_config = 0x22;
   debug_command(CMD_WR_CONFIG, &debug_config, 1);
   
-  // Program data (start address must be word aligned [32 bit])
   Serial.write(SRSP);    // Request data blocks
   digitalWrite(LED, HIGH);  
   unsigned char Done = 0;
@@ -547,7 +527,6 @@ void loop()
       ch = Serial.read();        
       switch (State)
       {
-        // Bootloader is waiting for a new block, each block begin with a flag byte
         case WAITING:
         {
           if(SDATA == ch)  // Incoming bytes are data
@@ -560,7 +539,7 @@ void loop()
           }
           break;
         }      
-        // Bootloader is receiving block data  
+
         case RECEIVING:
         {          
           rxBuf[BufIndex] = ch;
