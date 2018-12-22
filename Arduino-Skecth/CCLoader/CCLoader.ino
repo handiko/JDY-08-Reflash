@@ -11,16 +11,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 */
 
-// Start addresses on DUP (Increased buffer size improves performance)
 #define ADDR_BUF0                   0x0000 // Buffer (512 bytes)
 #define ADDR_DMA_DESC_0             0x0200 // DMA descriptors (8 bytes)
 #define ADDR_DMA_DESC_1             (ADDR_DMA_DESC_0 + 8)
 
-// DMA channels used on DUP
 #define CH_DBG_TO_BUF0              0x01   // Channel 0
 #define CH_BUF0_TO_FLASH            0x02   // Channel 1
 
-// Debug commands
 #define CMD_CHIP_ERASE              0x10
 #define CMD_WR_CONFIG               0x19
 #define CMD_RD_CONFIG               0x24
@@ -32,7 +29,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define CMD_BURST_WRITE             0x80
 #define CMD_GET_CHIP_ID             0x68
 
-// Debug status bitmasks
 #define STATUS_CHIP_ERASE_BUSY_BM   0x80 // New debug interface
 #define STATUS_PCON_IDLE_BM         0x40
 #define STATUS_CPU_HALTED_BM        0x20
@@ -42,7 +38,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define STATUS_OSC_STABLE_BM        0x02
 #define STATUS_STACK_OVERFLOW_BM    0x01
 
-// DUP registers (XDATA space address)
 #define DUP_DBGDATA                 0x6260  // Debug interface data buffer
 #define DUP_FCTL                    0x6270  // Flash controller
 #define DUP_FADDRL                  0x6271  // Flash controller addr
@@ -57,11 +52,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define DUP_DMA0CFGH                0x70D5  // Low byte, DMA config ch. 0
 #define DUP_DMAARM                  0x70D6  // DMA arming register
 
-// Utility macros
 #define LOBYTE(w)           ((unsigned char)(w))
 #define HIBYTE(w)           ((unsigned char)(((unsigned short)(w) >> 8) & 0xFF))
 
-// Commands to Bootloader
 #define SBEGIN                0x01
 #define SDATA                 0x02
 #define SRSP                  0x03
@@ -70,18 +63,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define WAITING               0x00
 #define RECEIVING             0x01
 
-// Debug control pins & the indicate LED
 int DD = 6;
 int DC = 5;
 int RESET = 4;
 int LED = 13;
 
-/******************************************************************************
- VARIABLES*/
-//! DUP DMA descriptor
 const unsigned char dma_desc_0[8] =
 {
-    // Debug Interface -> Buffer
     HIBYTE(DUP_DBGDATA),            // src[15:8]
     LOBYTE(DUP_DBGDATA),            // src[7:0]
     HIBYTE(ADDR_BUF0),              // dest[15:8]
@@ -91,10 +79,9 @@ const unsigned char dma_desc_0[8] =
     31,                             // trigger: DBG_BW
     0x11                            // increment destination
 };
-//! DUP DMA descriptor
+
 const unsigned char dma_desc_1[8] =
 {
-    // Buffer -> Flash controller
     HIBYTE(ADDR_BUF0),              // src[15:8]
     LOBYTE(ADDR_BUF0),              // src[7:0]
     HIBYTE(DUP_FWDATA),             // dest[15:8]
@@ -105,12 +92,6 @@ const unsigned char dma_desc_1[8] =
     0x42,                           // increment source
 };
 
-/**************************************************************************//**
-* @brief    Writes a byte on the debug interface. Requires DD to be
-*           output when function is called.
-* @param    data    Byte to write
-* @return   None.
-******************************************************************************/
 #pragma inline
 void write_debug_byte(unsigned char data)
 {
@@ -131,11 +112,6 @@ void write_debug_byte(unsigned char data)
     }
 }
 
-/**************************************************************************//**
-* @brief    Reads a byte from the debug interface. Requires DD to be
-*           input when function is called.
-* @return   Returns the byte read.
-******************************************************************************/
 #pragma inline
 unsigned char read_debug_byte(void)
 {
@@ -154,13 +130,6 @@ unsigned char read_debug_byte(void)
     return data;
 }
 
-/**************************************************************************//**
-* @brief    Function waits for DUP to indicate that it is ready. The DUP will
-*           pulls DD line low when it is ready. Requires DD to be input when
-*           function is called.
-* @return   Returns 0 if function timed out waiting for DD line to go low
-* @return   Returns 1 when DUP has indicated it is ready.
-******************************************************************************/
 #pragma inline
 unsigned char wait_dup_ready(void)
 {
@@ -173,15 +142,6 @@ unsigned char wait_dup_ready(void)
     return (count == 16) ? 0 : 1;
 }
 
-/**************************************************************************//**
-* @brief    Issues a command on the debug interface. Only commands that return
-*           one output byte are supported.
-* @param    cmd             Command byte
-* @param    cmd_bytes       Pointer to the array of data bytes following the
-*                           command byte [0-3]
-* @param    num_cmd_bytes   The number of data bytes (input to DUP) [0-3]
-* @return   Data returned by command
-******************************************************************************/
 unsigned char debug_command(unsigned char cmd, unsigned char *cmd_bytes,
                             unsigned short num_cmd_bytes)
 {
@@ -202,12 +162,6 @@ unsigned char debug_command(unsigned char cmd, unsigned char *cmd_bytes,
     return output;
 }
 
-/**************************************************************************//**
-* @brief    Resets the DUP into debug mode. Function assumes that
-*           the programmer I/O has already been configured using e.g.
-*           ProgrammerInit().
-* @return   None.
-******************************************************************************/
 void debug_init(void)
 {
     volatile unsigned char i;
@@ -228,11 +182,6 @@ void debug_init(void)
     delay(10);   // Wait
 }
 
-/**************************************************************************//**
-* @brief    Reads the chip ID over the debug interface using the
-*           GET_CHIP_ID command.
-* @return   Returns the chip id returned by the DUP
-******************************************************************************/
 unsigned char read_chip_id(void)
 {
     unsigned char id = 0;
@@ -253,13 +202,6 @@ unsigned char read_chip_id(void)
     return id;
 }
 
-/**************************************************************************//**
-* @brief    Sends a block of data over the debug interface using the
-*           BURST_WRITE command.
-* @param    src         Pointer to the array of input bytes
-* @param    num_bytes   The number of input bytes
-* @return   None.
-******************************************************************************/
 void burst_write_block(unsigned char *src, unsigned short num_bytes)
 {
     unsigned short i;
@@ -280,11 +222,6 @@ void burst_write_block(unsigned char *src, unsigned short num_bytes)
     pinMode(DD, OUTPUT);
 }
 
-/**************************************************************************//**
-* @brief    Issues a CHIP_ERASE command on the debug interface and waits for it
-*           to complete.
-* @return   None.
-******************************************************************************/
 void chip_erase(void)
 {
     volatile unsigned char status;
@@ -295,13 +232,6 @@ void chip_erase(void)
     } while((status & STATUS_CHIP_ERASE_BUSY_BM));
 }
 
-/**************************************************************************//**
-* @brief    Writes a block of data to the DUP's XDATA space.
-* @param    address     XDATA start address
-* @param    values      Pointer to the array of bytes to write
-* @param    num_bytes   Number of bytes to write
-* @return   None.
-******************************************************************************/
 void write_xdata_memory_block(unsigned short address,
                               const unsigned char *values,
                               unsigned short num_bytes)
@@ -327,12 +257,6 @@ void write_xdata_memory_block(unsigned short address,
     }
 }
 
-/**************************************************************************//**
-* @brief    Writes a byte to a specific address in the DUP's XDATA space.
-* @param    address     XDATA address
-* @param    value       Value to write
-* @return   None.
-******************************************************************************/
 void write_xdata_memory(unsigned short address, unsigned char value)
 {
     unsigned char instr[3];
@@ -350,11 +274,6 @@ void write_xdata_memory(unsigned short address, unsigned char value)
     debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
 }
 
-/**************************************************************************//**
-* @brief    Read a byte from a specific address in the DUP's XDATA space.
-* @param    address     XDATA address
-* @return   Value read from XDATA
-******************************************************************************/
 unsigned char read_xdata_memory(unsigned short address)
 {
     unsigned char instr[3];
@@ -368,14 +287,6 @@ unsigned char read_xdata_memory(unsigned short address)
     return debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
 }
 
-/**************************************************************************//**
-* @brief    Reads 1-32767 bytes from DUP's flash to a given buffer on the
-*           programmer.
-* @param    bank        Flash bank to read from [0-7]
-* @param    address     Flash memory start address [0x0000 - 0x7FFF]
-* @param    values      Pointer to destination buffer.
-* @return   None.
-******************************************************************************/
 void read_flash_memory_block(unsigned char bank,unsigned short flash_addr,
                              unsigned short num_bytes, unsigned char *values)
 {
