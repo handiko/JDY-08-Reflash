@@ -316,17 +316,13 @@ void write_xdata_memory_block(unsigned short address,
 
     for (i = 0; i < num_bytes; i++)
     {
-        // MOV A, values[i]
         instr[0] = 0x74;
         instr[1] = values[i];
         debug_command(CMD_DEBUG_INSTR_2B, instr, 2);
 
-        // MOV @DPTR, A
         instr[0] = 0xF0;
         debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
 
-        // INC DPTR
-        instr[0] = 0xA3;
         debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
     }
 }
@@ -341,18 +337,15 @@ void write_xdata_memory(unsigned short address, unsigned char value)
 {
     unsigned char instr[3];
 
-    // MOV DPTR, address
     instr[0] = 0x90;
     instr[1] = HIBYTE(address);
     instr[2] = LOBYTE(address);
     debug_command(CMD_DEBUG_INSTR_3B, instr, 3);
 
-    // MOV A, values[i]
     instr[0] = 0x74;
     instr[1] = value;
     debug_command(CMD_DEBUG_INSTR_2B, instr, 2);
 
-    // MOV @DPTR, A
     instr[0] = 0xF0;
     debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
 }
@@ -366,13 +359,11 @@ unsigned char read_xdata_memory(unsigned short address)
 {
     unsigned char instr[3];
 
-    // MOV DPTR, address
     instr[0] = 0x90;
     instr[1] = HIBYTE(address);
     instr[2] = LOBYTE(address);
     debug_command(CMD_DEBUG_INSTR_3B, instr, 3);
 
-    // MOVX A, @DPTR
     instr[0] = 0xE0;
     return debug_command(CMD_DEBUG_INSTR_1B, instr, 1);
 }
