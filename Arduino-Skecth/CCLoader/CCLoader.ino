@@ -11,13 +11,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 */
 
-/******************************************************************************
-* INCLUDES
-*/
-
-/******************************************************************************
-* DEFINES
-*/
 // Start addresses on DUP (Increased buffer size improves performance)
 #define ADDR_BUF0                   0x0000 // Buffer (512 bytes)
 #define ADDR_DMA_DESC_0             0x0200 // DMA descriptors (8 bytes)
@@ -65,14 +58,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #define DUP_DMAARM                  0x70D6  // DMA arming register
 
 // Utility macros
-//! Low nibble of 16bit variable
 #define LOBYTE(w)           ((unsigned char)(w))
-//! High nibble of 16bit variable
 #define HIBYTE(w)           ((unsigned char)(((unsigned short)(w) >> 8) & 0xFF))
-//! Convert XREG register declaration to an XDATA integer address
-//#define XREG(addr)       ((unsigned char volatile __xdata *) 0)[addr]
-//#define FCTL            XREG( 0x6270 )
-//#define XREG_TO_INT(a)      ((unsigned short)(&(a)))
 
 // Commands to Bootloader
 #define SBEGIN                0x01
@@ -130,7 +117,6 @@ void write_debug_byte(unsigned char data)
     unsigned char i;
     for (i = 0; i < 8; i++)
     {
-        // Set clock high and put data on DD line
         digitalWrite(DC, HIGH);
         if(data & 0x80)
         {
@@ -178,11 +164,9 @@ unsigned char read_debug_byte(void)
 #pragma inline
 unsigned char wait_dup_ready(void)
 {
-    // DUP pulls DD low when ready
     unsigned int count = 0;
     while ((HIGH == digitalRead(DD)) && count < 16)
     {
-        // Clock out 8 bits before checking if DD is low again
         read_debug_byte();
         count++;
     }
@@ -203,23 +187,16 @@ unsigned char debug_command(unsigned char cmd, unsigned char *cmd_bytes,
 {
     unsigned short i;
     unsigned char output = 0;
-    // Make sure DD is output
     pinMode(DD, OUTPUT);
-    // Send command
     write_debug_byte(cmd);
-    // Send bytes
     for (i = 0; i < num_cmd_bytes; i++)
     {
         write_debug_byte(cmd_bytes[i]);
     }
-    // Set DD as input
     pinMode(DD, INPUT);
     digitalWrite(DD, HIGH);
-    // Wait for data to be ready
     wait_dup_ready();
-    // Read returned byte
     output = read_debug_byte();
-    // Set DD as output
     pinMode(DD, OUTPUT);
 
     return output;
@@ -235,8 +212,6 @@ void debug_init(void)
 {
     volatile unsigned char i;
 
-    // Send two flanks on DC while keeping RESET_N low
-    // All low (incl. RESET_N)
     digitalWrite(DD, LOW);
     digitalWrite(DC, LOW);
     digitalWrite(RESET, LOW);
@@ -262,23 +237,17 @@ unsigned char read_chip_id(void)
 {
     unsigned char id = 0;
 
-    // Make sure DD is output
     pinMode(DD, OUTPUT);
     delay(1);
-    // Send command
     write_debug_byte(CMD_GET_CHIP_ID);
-    // Set DD as input
     pinMode(DD, INPUT);
     digitalWrite(DD, HIGH);
     delay(1);
-    // Wait for data to be ready
     if(wait_dup_ready() == 1)
     {
-      // Read ID and revision
       id = read_debug_byte(); // ID
       read_debug_byte();      // Revision (discard)
     }
-    // Set DD as output
     pinMode(DD, OUTPUT);
 
     return id;
@@ -295,7 +264,6 @@ void burst_write_block(unsigned char *src, unsigned short num_bytes)
 {
     unsigned short i;
 
-    // Make sure DD is output
     pinMode(DD, OUTPUT);
 
     write_debug_byte(CMD_BURST_WRITE | HIBYTE(num_bytes));
@@ -305,13 +273,10 @@ void burst_write_block(unsigned char *src, unsigned short num_bytes)
         write_debug_byte(src[i]);
     }
 
-    // Set DD as input
     pinMode(DD, INPUT);
     digitalWrite(DD, HIGH);
-    // Wait for DUP to be ready
     wait_dup_ready();
-    read_debug_byte(); // ignore output
-    // Set DD as output
+    read_debug_byte(); 
     pinMode(DD, OUTPUT);
 }
 
@@ -323,10 +288,8 @@ void burst_write_block(unsigned char *src, unsigned short num_bytes)
 void chip_erase(void)
 {
     volatile unsigned char status;
-    // Send command
     debug_command(CMD_CHIP_ERASE, 0, 0);
 
-    // Wait for status bit 7 to go low
     do {
         status = debug_command(CMD_READ_STATUS, 0, 0);
     } while((status & STATUS_CHIP_ERASE_BUSY_BM));
@@ -346,7 +309,6 @@ void write_xdata_memory_block(unsigned short address,
     unsigned char instr[3];
     unsigned short i;
 
-    // MOV DPTR, address
     instr[0] = 0x90;
     instr[1] = HIBYTE(address);
     instr[2] = LOBYTE(address);
