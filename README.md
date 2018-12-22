@@ -28,7 +28,7 @@ The CCLoader.exe and the .bin file **must be in the same folder.**
 * Now your JDY-08 has become HM-10 (but still in the JDY-08's physical form, of course).
 
 ## Post Programming
-After he programming, some of the physical pins are changed. The most important pins are:
+After the programming, some of the physical pins are changed. The most important pins are:
 * P13 become Wake-up Pin.
 * P16 become UART TX.
 * P17 become UART RX.
