@@ -12,7 +12,7 @@ Replacing JDY-08 Bluetooth LE's firmware with the HM-10 v540 one. Firmware progr
 ## Reflash the chip (On a Windows Computer)
 * Program the Arduino UNO with the **CCLoader.ino** sketch.
 * Connect the JDY-08 module into the Arduino. **BE CAUTIOUS, JDY-08 is a 3.3V device, Connect the VCC JDY-08 pin1 to the 3.3V pin on the Arduino**. I manage to be able to program the CC2541 at 5V level, but it is NOT RECOMMENDED. 
-![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_firmware_programming.png)
+![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_ccloader.png)
 * **Check the COM Port number** used by the Arduino. **Let say it is COM9. Note down the 9.**
 * Open CMD, **navigate to the JDY-08-Reflash/CCLoader/Exe** folder. There are the CCLoader.exe and the CC2541hm10v540.bin.
 The CCLoader.exe and the .bin file **must be in the same folder.**
