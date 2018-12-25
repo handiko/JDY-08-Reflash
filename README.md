@@ -10,6 +10,7 @@ Replacing JDY-08 Bluetooth LE's firmware with the HM-10 v540. Firmware programmi
 * **CCLoader.exe** Windows program as the programming software (Windows only). 
 * **CC2541 V540 firmware binary file** This binary file is the firmware we are going to use to replace the existing firmware.
 * **Arduino Sketch for using the Arduino UNO board as a Serial Interface** (**JDY-08_Serial_Interface.ino** In the Arduino-Sketch Folder).
+* **AltSoftSerial Library for Arduino** in order to get the JDY-08_Serial_Interface.ino to work. This library is used to emulate second UART port on the Arduino UNO. This library can be downloaded from https://github.com/PaulStoffregen/AltSoftSerial **Don't forget to install this library properly**, otherwise the sketch above will not compile.
 * **1 1k Ohms resistor and 1 2k Ohms resistor** This resistor is wil be used as a voltage divider for int-face-ing 5V TTL level down to 3.3V.
 * **Breadboard and some jumper wires**
 
@@ -46,5 +47,7 @@ To test the BLE module whether is was successfuly programed with the HM-10 firmw
 * **Wire your module to the Arduino UNO as the picture below.** Be carefull, don't forget to power the JDY-08 from 3.3V power source, wire some jumper to connect the P16 (JDY-08 UART TX) to the Arduino UNO D8, and the P17 (JDY-08 UART RX) to the Arduino UNO D9 thru resistors voltage divider.
 
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_test_at_command.png)
+
+* **Upload JDY-08_Serial_Interface.ino** into your Arduino UNO (don't forget to install AltSoftSerial library first).
 
 ...
