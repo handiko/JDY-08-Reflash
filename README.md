@@ -54,9 +54,14 @@ To test the BLE module whether is was successfuly programed with the HM-10 firmw
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_Serial_Interface_first_message.png)
 
 * **Check Whether the JDY-08 responding AT Commands**. This test will confirm whether the JDY-08 responding the incoming AT Commands. The commands that we are sending is AT+VERR? which will ask the module what version of the firmware is installed.
-To do this, first you need to type AT then [SEND] and the module should relply with OK. This indicate the module is recognizing AT command and still responding. Second you need to type AT+VERR? then [SEND]. The module should reply with "HMSoft V540"
+To do this, first you need to type **AT** then [SEND] and the module should relply with OK. This indicate the module is recognizing AT command and still responding. Second you need to type **AT+VERR?** then [SEND]. The module should reply with "HMSoft V540"
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_AT_command_check.png)
 
 If this test is success, then your JDY-08 module with HM-10 V540 firmware is ready to go!
 
-...
+## Acknowledgement
+Thank you for:
+* https://www.iot-experiments.com/jdy-08/
+* https://elementztechblog.wordpress.com/2017/03/23/ibeacon-using-hm10-ble-module/
+* https://github.com/RedBearLab/CCLoader
+* https://github.com/PaulStoffregen/AltSoftSerial
