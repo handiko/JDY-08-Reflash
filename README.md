@@ -8,6 +8,7 @@ Replacing JDY-08 Bluetooth LE's firmware with the HM-10 v540. Firmware programmi
 * **Arduino UNO**
 * **Arduino Sketch** for programming the CC2541 (**CCLoader.ino** In the Arduino-Sketch Folder, or from https://github.com/RedBearLab/CCLoader)
 * **CCLoader.exe** Windows program as the programming software (Windows only). 
+* **CC2541 V540 firmware binary file** This binary file is the firmware we are going to use to replace the existing firmware.
 
 ## Reflash the chip (On a Windows Computer)
 * Program the Arduino UNO with the **CCLoader.ino** sketch.
