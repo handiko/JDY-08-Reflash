@@ -48,4 +48,6 @@ To test the BLE module whether is was successfuly programed with the HM-10 firmw
 
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_test_at_command.png)
 
+* **Upload JDY-08_Serial_Interface.ino** into your Arduino UNO (don't forget to install AltSoftSerial library first).
+
 ...
