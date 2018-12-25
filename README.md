@@ -31,7 +31,7 @@ The CCLoader.exe and the .bin file **must be in the same folder.**
 
 * Now your JDY-08 has become HM-10 (but still in the JDY-08's physical form, of course).
 
-## Post Programming
+## Physical Pins After Programming
 After the programming, some of the physical pins are changed. The most important pins are:
 * P13 become Wake-up Pin.
 * P16 become UART TX.
@@ -39,3 +39,12 @@ After the programming, some of the physical pins are changed. The most important
 
 Some people said that it is necessary to pull down P13 to enter the AT mode. But for my experience, it's not. Try pull down the P13 if you encounter difficulty to enter AT mode.
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_pins_post_programming.png)
+
+## Testing the JDY-08 with HM-10 Firmware
+To test the BLE module whether is was successfuly programed with the HM-10 firmware, we can run some simple AT commands to check if the module still alive and check the firmware version.
+
+* **Wire your module to the Arduino UNO as the picture below.** Be carefull, don't forget to power the JDY-08 from 3.3V power source, wire some jumper to connect the P16 (JDY-08 UART TX) to the Arduino UNO D8, and the P17 (JDY-08 UART RX) to the Arduino UNO D9 thru resistors voltage divider.
+
+![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_test_at_command.png)
+
+...
