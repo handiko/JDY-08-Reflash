@@ -53,8 +53,7 @@ To test the BLE module whether is was successfuly programed with the HM-10 firmw
 * **Open Serial Monitor window, set to 9600baud, NL & CR,** then message below should appear. If not, try press the Arduino Reset button.
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_Serial_Interface_first_message.png)
 
-* **Check Whether the JDY-08 responding AT Commands**. This test will confirm whether the JDY-08 responding the incoming AT Commands. The commands that we are sending is AT+VERR? which will ask the module what version of the firmware is installed.
-To do this, first you need to type **AT** then [SEND] and the module should relply with OK. This indicate the module is recognizing AT command and still responding. Second you need to type **AT+VERR?** then [SEND]. The module should reply with "HMSoft V540"
+* **Check Whether the JDY-08 responding AT Commands**. This test will confirm whether the JDY-08 responding the incoming AT Commands. The commands that we are going to send is AT+VERR? which will ask the module what version of the firmware is installed. To do this, first you need to type **AT** then [SEND] and the module should relply with OK. This indicate the module is recognizing AT command and still responding. Second you need to type **AT+VERR?** then [SEND]. The module should reply with "HMSoft V540"
 ![alt text](https://github.com/handiko/JDY-08-Reflash/blob/master/Pics/JDY-08_AT_command_check.png)
 
 If this test is success, then your JDY-08 module with HM-10 V540 firmware is ready to go!
