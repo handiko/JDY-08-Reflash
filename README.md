@@ -64,3 +64,11 @@ Thank you for:
 * [https://elementztechblog.wordpress.com/2017/03/23/ibeacon-using-hm10-ble-module/](https://elementztechblog.wordpress.com/2017/03/23/ibeacon-using-hm10-ble-module/)
 * [https://github.com/RedBearLab/CCLoader](https://github.com/RedBearLab/CCLoader)
 * [https://github.com/PaulStoffregen/AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)
+
+## Contributing
+1. Fork it [https://github.com/handiko/JDY-08-Reflash/fork](https://github.com/handiko/JDY-08-Reflash/fork)
+2. Create new branch (`git checkout -b add-blah-blah`)
+3. Do some editing / create new feature
+4. Commit your works (`git commit -m "Adding some blah blah blah.."`)
+5. Push to the branch (`git push -u origin add-blah-blah`)
+6. Create a new Pull Request
