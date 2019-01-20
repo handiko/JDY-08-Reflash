@@ -1,5 +1,5 @@
 # Reflashing JDY-08 with HM-10 BLE firmware
-Replacing JDY-08 Bluetooth LE's firmware with the HM-10 v540. Firmware programming is done using Arduino UNO as the programmer/downloader.
+Replacing JDY-08 Bluetooth LE's firmware with the HM-10 v540. Firmware programming is done using an Arduino UNO as the programmer/downloader.
 
 ![](./JDY-08_photo.png)
 
